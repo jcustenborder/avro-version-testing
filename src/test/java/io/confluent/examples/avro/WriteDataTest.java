@@ -6,11 +6,13 @@ import org.apache.avro.generic.GenericData;
 import org.apache.avro.generic.GenericDatumWriter;
 import org.apache.avro.io.Encoder;
 import org.apache.avro.io.EncoderFactory;
+import org.apache.avro.reflect.ReflectData;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
 
 public class WriteDataTest {
@@ -22,6 +24,16 @@ public class WriteDataTest {
     this.testDirectory.mkdirs();
   }
 
+  @Test
+  public void writeSchema() throws IOException {
+    Schema schema = ReflectData.get().getSchema(Dummy.class);
+    String fileName = String.format("avro.%s.avsc", Constants.AVRO_VERSION);
+    File outputFile = new File(this.testDirectory, fileName);
+
+    try(FileWriter writer = new FileWriter(outputFile)) {
+      writer.write(schema.toString(true));
+    }
+  }
 
   @Test
   public void write() throws IOException {
